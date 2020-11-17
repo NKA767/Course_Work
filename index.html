@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>After School Club</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="products.js"></script>
+    <link rel="stylesheet" href="styling.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+
+
+            <h1>{{ sitename }}
+
+                <button type="default" v-on:click="showCheckout" v-show="canCheckout">
+                    {{ cartItemCount}} In Cart
+                </button>
+            </h1>
+
+        </header>
+
+        <main>
+
+            <div v-if="showProduct">
+
+
+
+                <input type="radio" id="location" v-on:click="showLocation()" name="selection" value="location">
+                <label for="location">Location</label><br>
+                <input type="radio" id="price" v-on:click="showPrice()" name="selection" value="price">
+                <label for="price">Price</label><br>
+                <input type="radio" id="Availability" v-on:click="showAvailability()" name="selection"
+                    value="Availability">
+                <label for="Availability">Availability</label><br>
+                <input type="radio" id="subject" v-on:click="showSubject()" name="selection" value="subject">
+                <label for="subject">Subject</label><br>
+
+                <input type="radio" id="Ascending" v-on:click="showAscending()" name="order" value="Ascending">
+                <label for="Ascending">Ascending</label><br>
+                <input type="radio" id="Descending" v-on:click="showDescending()" name="order" value="Descending">
+                <label for="Descending">Descending</label><br>
+
+
+                <div v-for="product in sortLocation" v-if="sortedLocation">
+
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add to
+                        cart</button>
+
+                </div>
+
+
+                <div v-for="product in sortPrice" v-if="sortedPrice">
+
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add To
+                        Cart</button>
+                </div>
+
+                <div v-for="product in sortAvailability" v-if="sortedAvailability">
+
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add To
+                        Cart</button>
+                </div>
+
+
+                <div v-for="product in sortSubject" v-if="sortedSubject">
+
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add To
+                        Cart</button>
+
+                </div>
+                <div v-for="product in products"
+                    v-if="sortedSubject== false && sortedLocation== false && sortedPrice== false && sortedAvailability== false">
+
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="addToCart(product)" v-show="canAddToCart(product)">Add To
+                        Cart</button>
+
+                </div>
+            </div>
+            <div v-else>
+                <h2>Cart</h2>
+
+                <div v-for="product in cart">
+                    <img v-bind:src="product.image" alt="subject icon">
+                    <h1 v-text="product.title"></h1>
+                    <p v-text="product.location"></p>
+                    <p v-text="product.priceText + product.price"></p>
+                    <p v-text="product.spaces + product.spaceNumber"></p>
+
+
+
+                    <button class="default" v-on:click="removeItemFromCart(product)"> Remove From Cart</button>
+
+
+                </div>
+
+                <p>
+                <h2>Checkout</h2>
+                <strong>First Name:</strong>
+
+                <input type="text" v-model.trim="order.firstName"
+                    onkeypress='return event.charCode>65 && event.charCode <=122;' />
+                </p>
+                <p>
+                    <strong>Phone Number</strong>
+                    <input v-model.number="order.phoneNumber"
+                        onkeypress='return event.charCode>48 && event.charCode<=57' />
+                </p>
+                <h2>Order Information</h2>
+                <p>First Name: {{order.firstName}}</p>
+                <p>Phone Number: {{order.phoneNumber}}</p>
+                <button v-on:click="submitForm" v-show="canSubmitOrder">Submit Order</button>
+
+            </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </main>
+
+    </div>
+</body>
+
+
+<script>
+    var webstore = new Vue({
+        el: '#app',
+        data: {
+            sitename: "After School Club",
+
+            sortedLocation: false,
+            sortedPrice: false,
+            sortedAvailability: false,
+            sortedSubject: false,
+            ascending: false,
+            descending: false,
+            showProduct: true,
+
+            order: {
+                firstName: '',
+                phoneNumber: ''
+            },
+            cart: [],
+            products: products,
+
+
+
+
+        },
+        methods: {
+            addToCart: function (product) {
+
+                if (product.spaceNumber > 0) {
+                    this.cart.push(product);
+                    product.spaceNumber -= 1;
+
+                }
+
+
+
+            },
+            showAscending() {
+                this.ascending = true;
+                this.descending = false;
+
+
+
+
+
+            },
+            showDescending() {
+                this.descending = true;
+                this.ascending = false;
+
+
+
+
+
+            },
+            showLocation() {
+                this.sortedLocation = true;
+                this.sortedAvailability = false;
+                this.sortedPrice = false;
+                this.sortedSubject = false;
+
+
+
+
+
+            },
+
+            showPrice() {
+                this.sortedPrice = true;
+                this.sortedAvailability = false;
+                this.sortedLocation = false;
+                this.sortedSubject = false;
+
+
+
+
+            },
+            showAvailability() {
+                this.sortedAvailability = true;
+                this.sortedLocation = false;
+                this.sortedPrice = false;
+                this.sortedSubject = false;
+
+
+
+            },
+            showSubject() {
+                this.sortedSubject = true;
+                this.sortedAvailability = false;
+                this.sortedPrice = false;
+                this.sortedLocation = false;
+
+
+
+            },
+
+
+
+
+            removeItemFromCart: function (product) {
+                this.cart.splice(this.cart.indexOf(product), 1);
+                product.spacenumber += 1;
+
+
+            },
+
+
+
+            showCheckout() {
+                this.showProduct = this.showProduct ? false : true;
+
+            },
+            submitForm() { alert('Order submitted!') },
+
+            canAddToCart(product) {
+                return product.spaceNumber > 0;
+
+
+            },
+
+
+
+        },
+
+
+
+
+
+        computed: {
+            cartItemCount() {
+                return this.cart.length;
+            },
+
+
+            canCheckout() {
+                return this.cart.length > 0;
+
+
+            },
+
+
+
+
+            canSubmitOrder() {
+                if (this.order.firstName && this.order.phoneNumber) {
+                    return true;
+                }
+
+
+
+
+            },
+            sortLocation() {
+
+                let productsArray = this.products.slice(0);
+                function compare(a, b) {
+                    if (a.location > b.location)
+                        return 1;
+                    if (a.location < b.location)
+                        return -1;
+                    return 0;
+
+                }
+                if (this.descending) {
+                    return productsArray.sort(compare).reverse();
+
+                } else {
+
+                    return productsArray.sort(compare);
+                }
+
+            },
+
+            sortSubject() {
+
+                let productsArray = this.products.slice(0);
+                function compare(a, b) {
+                    if (a.title > b.title)
+                        return 1;
+                    if (a.title < b.title)
+                        return -1;
+                    return 0;
+
+                }
+                if (this.descending) {
+                    return productsArray.sort(compare).reverse();
+
+                } else {
+
+                    return productsArray.sort(compare);
+                }
+            },
+
+            sortAvailability() {
+
+                let productsArray = this.products.slice(0);
+                function compare(a, b) {
+                    if (a.spaceNumber > b.spaceNumber)
+                        return 1;
+                    if (a.spaceNumber < b.spaceNumber)
+                        return -1;
+                    return 0;
+
+                }
+                if (this.descending) {
+                    return productsArray.sort(compare).reverse();
+
+                } else {
+
+                    return productsArray.sort(compare);
+                }
+            },
+
+            sortPrice() {
+
+                let productsArray = this.products.slice(0);
+                function compare(a, b) {
+                    if (a.price > b.price)
+                        return 1;
+                    if (a.price < b.price)
+                        return -1;
+                    return 0;
+
+                }
+
+
+                if (this.descending) {
+                    return productsArray.sort(compare).reverse();
+
+                } else {
+
+                    return productsArray.sort(compare);
+                }
+            },
+
+
+
+
+        },
+
+
+
+
+
+
+
+    });
+
+</script>
+
+</html>
